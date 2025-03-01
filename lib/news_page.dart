@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:newsapp/controller/news_controller.dart';
 import 'package:newsapp/widget/news_page_category_buttons.dart';
 
-class NewsPage extends StatelessWidget {
+class NewsPage extends GetView<NewsController> {
   const NewsPage({super.key});
 
   @override
@@ -10,27 +12,27 @@ class NewsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "News App",
-          style: TextStyle(fontSize: 27.0, color: Colors.white,fontFamily: 'Blinker'),
+          style: TextStyle(fontSize: 27.0, color: Colors.white, fontFamily: 'Blinker'),
         ),
         backgroundColor: Colors.blueAccent,
-        actions: [
+        actions: const [
           Icon(
             Icons.search,
             color: Colors.white,
           ),
         ],
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: Drawer(
         child: Container(
-          color: Colors.white,
+          color: Theme.of(context).scaffoldBackgroundColor,
           child: Column(
             children: [
               Container(
-                color: Colors.purple,
+                color: Theme.of(context).primaryColor,
                 width: double.infinity,
                 height: 190.0,
-                child: Column(
+                child: const Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -49,29 +51,39 @@ class NewsPage extends StatelessWidget {
                         fontSize: 16.0,
                       ),
                     ),
-                    SizedBox(height: 5.0),
+                    SizedBox(height: 7.0),
                   ],
                 ),
               ),
               ListTile(
-                leading: Icon(Icons.home),
-                title: Text("Home"),
+                leading:  Icon(Icons.home, color: Theme.of(context).iconTheme.color),
+                title: const Text("Home"),
                 onTap: () {},
               ),
               ListTile(
-                leading: Icon(Icons.history),
-                title: Text("Reading History"),
+                leading: const Icon(Icons.history),
+                title: const Text("Reading History"),
                 onTap: () {},
               ),
-              Divider(),
+              Divider(color: Theme.of(context).dividerColor),
               ListTile(
-                leading: Icon(Icons.sunny),
-                title: Text("Dark Mode"),
-                trailing: Switch(
-                  value: false,
-                  onChanged: (bool value) {},
-                ),
-                onTap: () {},
+                leading: Obx(() {
+                  bool isDark = Get.find<NewsController>().isDarkMode.value;
+                  return Icon(
+                    isDark ? Icons.nightlight_round : Icons.sunny,
+                    color: isDark ? Colors.white70 : Colors.black,
+                  );
+                }),
+                title: const Text("Dark Mode"),
+                trailing: Obx(() => Switch(
+                  value: Get.find<NewsController>().isDarkMode.value,
+                  onChanged: (value) {
+                    Get.find<NewsController>().onThemeClicked();
+                  },
+                )),
+                onTap: () {
+                  controller.onThemeClicked();
+                },
               ),
             ],
           ),
@@ -80,7 +92,6 @@ class NewsPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           // NEWS CATEGORY BUTTONS
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -96,9 +107,8 @@ class NewsPage extends StatelessWidget {
               ],
             ),
           ),
-
-          //NEWS CONTENT BELOW
-          Expanded(
+          // NEWS CONTENT BELOW
+          const Expanded(
             child: Center(
               child: Text("News Content Here"),
             ),

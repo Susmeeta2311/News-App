@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:newsapp/controller/news_controller.dart';
 
 class CategoryButton extends StatelessWidget {
   final String title;
@@ -10,18 +12,22 @@ class CategoryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
-      child: ElevatedButton(
-        onPressed: onPressed, // Call the function when pressed
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white70,
-          foregroundColor: Colors.black,
-          side: BorderSide(
-            color: Colors.grey, // Border color
-            width: 0.5, // Border width
+      child: Obx(() {
+        bool isDark = Get.find<NewsController>().isDarkMode.value;
+
+        return ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isDark ? Colors.white30 : Colors.white70, // Dark mode: black12, Light mode: white70
+            foregroundColor: isDark ? Colors.white : Colors.black,  // Dark mode: white text, Light mode: black text
+            side: const BorderSide(
+              color: Colors.grey,
+              width: 0.5,
+            ),
           ),
-        ),
-        child: Text(title),
-      ),
+          child: Text(title),
+        );
+      }),
     );
   }
 }
