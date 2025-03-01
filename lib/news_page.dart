@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:newsapp/controller/news_controller.dart';
+import 'package:newsapp/news_reading_history_page.dart';
+import 'package:newsapp/news_search_page.dart';
 import 'package:newsapp/widget/news_page_category_buttons.dart';
 
 class NewsPage extends GetView<NewsController> {
@@ -12,14 +14,17 @@ class NewsPage extends GetView<NewsController> {
       appBar: AppBar(
         title: Text(
           "News App",
-          style: TextStyle(fontSize: 27.0, color: Colors.white, fontFamily: 'Blinker'),
+          style: TextStyle(
+              fontSize: 25.0, color: Colors.white),
         ),
         backgroundColor: Colors.blueAccent,
-        actions: const [
-          Icon(
-            Icons.search,
-            color: Colors.white,
-          ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Get.to(NewsSearchPage());
+            },
+            icon: Icon(Icons.search, color: Colors.white),
+          )
         ],
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -56,14 +61,19 @@ class NewsPage extends GetView<NewsController> {
                 ),
               ),
               ListTile(
-                leading:  Icon(Icons.home, color: Theme.of(context).iconTheme.color),
+                leading:
+                    Icon(Icons.home, color: Theme.of(context).iconTheme.color),
                 title: const Text("Home"),
-                onTap: () {},
+                onTap: () {
+                  Get.back();
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.history),
                 title: const Text("Reading History"),
-                onTap: () {},
+                onTap: () {
+                  Get.to(NewsReadingHistoryPage());
+                },
               ),
               Divider(color: Theme.of(context).dividerColor),
               ListTile(
@@ -76,11 +86,11 @@ class NewsPage extends GetView<NewsController> {
                 }),
                 title: const Text("Dark Mode"),
                 trailing: Obx(() => Switch(
-                  value: Get.find<NewsController>().isDarkMode.value,
-                  onChanged: (value) {
-                    Get.find<NewsController>().onThemeClicked();
-                  },
-                )),
+                      value: Get.find<NewsController>().isDarkMode.value,
+                      onChanged: (value) {
+                        Get.find<NewsController>().onThemeClicked();
+                      },
+                    )),
                 onTap: () {
                   controller.onThemeClicked();
                 },
@@ -108,11 +118,6 @@ class NewsPage extends GetView<NewsController> {
             ),
           ),
           // NEWS CONTENT BELOW
-          const Expanded(
-            child: Center(
-              child: Text("News Content Here"),
-            ),
-          ),
         ],
       ),
     );

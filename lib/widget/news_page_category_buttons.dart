@@ -18,8 +18,8 @@ class CategoryButton extends StatelessWidget {
         return ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: isDark ? Colors.white30 : Colors.white70, // Dark mode: black12, Light mode: white70
-            foregroundColor: isDark ? Colors.white : Colors.black,  // Dark mode: white text, Light mode: black text
+            backgroundColor: isDark ? Colors.white30 : Colors.white70,
+            foregroundColor: isDark ? Colors.white : Colors.black,
             side: const BorderSide(
               color: Colors.grey,
               width: 0.5,

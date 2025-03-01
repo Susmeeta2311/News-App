@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NewsController extends GetxController {
-  var isDarkMode = false.obs;
+  final isDarkMode = false.obs;
 
   void onThemeClicked() {
     isDarkMode.value = !isDarkMode.value;
