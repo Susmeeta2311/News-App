@@ -16,18 +16,20 @@ class MyApp extends StatelessWidget {
     final NewsController controller = Get.find();
 
     return Obx(() => GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter News App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.deepPurple, brightness: Brightness.dark),
-      ),
-      themeMode: controller.isDarkMode.value ? ThemeMode.dark : ThemeMode.light, //
-      home: const NewsPage(),
-    ));
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter News App',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.deepPurple, brightness: Brightness.dark),
+          ),
+          themeMode:
+              controller.isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
+          //
+          home: const NewsPage(),
+        ));
   }
 }

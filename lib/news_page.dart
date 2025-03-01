@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:newsapp/controller/news_controller.dart';
+import 'package:newsapp/model/news_model.dart';
+import 'package:newsapp/services/network_services.dart';
 import 'package:newsapp/news_reading_history_page.dart';
 import 'package:newsapp/news_search_page.dart';
 import 'package:newsapp/widget/news_page_category_buttons.dart';
@@ -12,18 +15,17 @@ class NewsPage extends GetView<NewsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "News App",
-          style: TextStyle(
-              fontSize: 25.0, color: Colors.white),
+          style: TextStyle(fontSize: 25.0, color: Colors.white),
         ),
         backgroundColor: Colors.blueAccent,
         actions: [
           IconButton(
             onPressed: () {
-              Get.to(NewsSearchPage());
+              Get.to(const NewsSearchPage());
             },
-            icon: Icon(Icons.search, color: Colors.white),
+            icon: const Icon(Icons.search, color: Colors.white),
           )
         ],
         iconTheme: const IconThemeData(color: Colors.white),
@@ -62,7 +64,7 @@ class NewsPage extends GetView<NewsController> {
               ),
               ListTile(
                 leading:
-                    Icon(Icons.home, color: Theme.of(context).iconTheme.color),
+                Icon(Icons.home, color: Theme.of(context).iconTheme.color),
                 title: const Text("Home"),
                 onTap: () {
                   Get.back();
@@ -72,13 +74,13 @@ class NewsPage extends GetView<NewsController> {
                 leading: const Icon(Icons.history),
                 title: const Text("Reading History"),
                 onTap: () {
-                  Get.to(NewsReadingHistoryPage());
+                  Get.to(const NewsReadingHistoryPage());
                 },
               ),
               Divider(color: Theme.of(context).dividerColor),
               ListTile(
                 leading: Obx(() {
-                  bool isDark = Get.find<NewsController>().isDarkMode.value;
+                  bool isDark = controller.isDarkMode.value;
                   return Icon(
                     isDark ? Icons.nightlight_round : Icons.sunny,
                     color: isDark ? Colors.white70 : Colors.black,
@@ -86,11 +88,11 @@ class NewsPage extends GetView<NewsController> {
                 }),
                 title: const Text("Dark Mode"),
                 trailing: Obx(() => Switch(
-                      value: Get.find<NewsController>().isDarkMode.value,
-                      onChanged: (value) {
-                        Get.find<NewsController>().onThemeClicked();
-                      },
-                    )),
+                  value: controller.isDarkMode.value,
+                  onChanged: (value) {
+                    controller.onThemeClicked();
+                  },
+                )),
                 onTap: () {
                   controller.onThemeClicked();
                 },
@@ -107,17 +109,103 @@ class NewsPage extends GetView<NewsController> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                CategoryButton(title: "General", onPressed: () {}),
-                CategoryButton(title: "Business", onPressed: () {}),
-                CategoryButton(title: "Technology", onPressed: () {}),
-                CategoryButton(title: "Sports", onPressed: () {}),
-                CategoryButton(title: "Entertainment", onPressed: () {}),
-                CategoryButton(title: "Health", onPressed: () {}),
-                CategoryButton(title: "Science", onPressed: () {}),
+                CategoryButton(title: "General"),
+                CategoryButton(title: "Business"),
+                CategoryButton(title: "Technology"),
+                CategoryButton(title: "Sports"),
+                CategoryButton(title: "Entertainment"),
+                CategoryButton(title: "Health"),
+                CategoryButton(title: "Science"),
               ],
             ),
           ),
           // NEWS CONTENT BELOW
+          Expanded(
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (controller.articles.isEmpty) {
+                return const Center(child: Text("No news available"));
+              }
+              return ListView.builder(
+                itemCount: controller.articles.length,
+                itemBuilder: (context, index) {
+                  final article = controller.articles[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // IMAGE
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
+                          child: Image.network(
+                            article.image ?? "https://via.placeholder.com/300",
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                height: 200,
+                                width: double.infinity,
+                                color: Colors.grey[300],
+                                child: const Icon(Icons.image, size: 50, color: Colors.grey),
+                              );
+                            },
+                          ),
+                        ),
+
+                        // NEWS CONTENT
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                article.title ?? "No Title",
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                article.description ?? "No Description",
+                                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    article.source?.name ?? "Unknown Source",
+                                    style: const TextStyle(fontSize: 14, color: Colors.blue),
+                                  ),
+                                  Text(
+                                    article.publishedAt != null
+                                        ? DateFormat("MMM d, yyyy").format(article.publishedAt!)
+                                        : "Unknown Date",
+                                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                  ),
+
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            }),
+          ),
         ],
       ),
     );
