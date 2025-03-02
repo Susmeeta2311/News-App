@@ -32,7 +32,7 @@ class CategoryButton extends StatelessWidget {
           ),
           style: ElevatedButton.styleFrom(
             backgroundColor: isSelected
-                ? (isDark ? Colors.black : Colors.purple)
+                ? (isDark ? Colors.black :Color(0xff9d4edd))
                 : (isDark ? Colors.white30 : Colors.white70),
             foregroundColor: isDark ? Colors.white : Colors.black,
             side: const BorderSide(color: Colors.grey, width: 0.5),

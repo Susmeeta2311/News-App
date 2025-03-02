@@ -9,10 +9,17 @@ class NetworkServices {
 
   /// FETCH NEWS BASE ON CATEGORY
   Future<NewsModel> fetchNews(String category) async {
-    final Uri url = Uri.parse("$baseUrl?category=$category&lang=en&country=in&max=10&token=$key");
+    final Uri url = Uri.parse(
+        "https://gnews.io/api/v4/top-headlines?category=$category&lang=en&country=in&max=10&token=f37f7bbcfa107ac9544356c64393805f");
+
+    print("Fetching news from URL: $url"); // Debugging
 
     try {
+
       final response = await http.get(url);
+
+      print("Response Status Code: ${response.statusCode}"); // Debugging
+      print("Response Body: ${response.body}"); // Debugging
 
       if (response.statusCode == 200) {
         return newsModelFromJson(response.body);
@@ -23,4 +30,5 @@ class NetworkServices {
       throw Exception("Error fetching news: $e");
     }
   }
+
 }

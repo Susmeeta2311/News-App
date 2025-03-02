@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:newsapp/controller/news_controller.dart';
 import 'package:newsapp/model/news_model.dart';
+import 'package:newsapp/news_detail.dart';
 import 'package:newsapp/services/network_services.dart';
 import 'package:newsapp/news_reading_history_page.dart';
 import 'package:newsapp/news_search_page.dart';
@@ -132,78 +133,90 @@ class NewsPage extends GetView<NewsController> {
                 itemCount: controller.articles.length,
                 itemBuilder: (context, index) {
                   final article = controller.articles[index];
-                  return Card(
-                    margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // IMAGE
-                        ClipRRect(
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
-                          child: Image.network(
-                            article.image ?? "https://via.placeholder.com/300",
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                height: 200,
-                                width: double.infinity,
-                                color: Colors.grey[300],
-                                child: const Icon(Icons.image, size: 50, color: Colors.grey),
-                              );
-                            },
+                  return GestureDetector(
+                    onTap: () {
+                      Get.to(() => NewsDetail(article: article));
+                    },
+                    child: Card(
+                      margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // IMAGE
+                          ClipRRect(
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
+                            child: Image.network(
+                              article.image ?? "",
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  height: 200,
+                                  width: double.infinity,
+                                  color: Colors.grey[300],
+                                  child: const Icon(Icons.image, size: 50, color: Colors.grey),
+                                );
+                              },
+                            ),
                           ),
-                        ),
 
-                        // NEWS CONTENT
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                article.title ?? "No Title",
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                          // NEWS CONTENT
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // **News Title**
+                                Text(
+                                  article.title ?? "No Title",
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                article.description ?? "No Description",
-                                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    article.source?.name ?? "Unknown Source",
-                                    style: const TextStyle(fontSize: 14, color: Colors.blue),
-                                  ),
-                                  Text(
-                                    article.publishedAt != null
-                                        ? DateFormat("MMM d, yyyy").format(article.publishedAt!)
-                                        : "Unknown Date",
-                                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                                  ),
+                                const SizedBox(height: 10.0),
+                                // **News Description**
+                                Text(
+                                  article.description ?? "No Description",
+                                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 10.0),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    // News Source (Left Side)
+                                    Text(
+                                      article.source?.name ?? "Unknown Source",
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
 
-                                ],
-                              ),
-                            ],
+                                    // Published Date (Right Side)
+                                    Text(
+                                      controller.formatDate(article.publishedAt),
+                                      style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 },
               );
+
             }),
           ),
         ],
