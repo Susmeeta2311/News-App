@@ -50,6 +50,7 @@ class Article {
     this.image,
     this.publishedAt,
     this.source,
+
   });
 
   factory Article.fromJson(Map<String, dynamic> json) => Article(

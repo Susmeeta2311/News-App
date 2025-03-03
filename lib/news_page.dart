@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:newsapp/controller/news_controller.dart';
 import 'package:newsapp/model/news_model.dart';
 import 'package:newsapp/news_detail.dart';
-import 'package:newsapp/services/network_services.dart';
 import 'package:newsapp/news_reading_history_page.dart';
 import 'package:newsapp/news_search_page.dart';
 import 'package:newsapp/widget/news_page_category_buttons.dart';
@@ -20,7 +18,7 @@ class NewsPage extends GetView<NewsController> {
           "News App",
           style: TextStyle(fontSize: 25.0, color: Colors.white),
         ),
-        backgroundColor: Get.isDarkMode ? Color(0xff343a40) : Colors.blueAccent,
+        backgroundColor: Get.isDarkMode ? const Color(0xff343a40) : Colors.blueAccent,
         actions: [
           IconButton(
             onPressed: () {
@@ -94,9 +92,6 @@ class NewsPage extends GetView<NewsController> {
                     controller.onThemeClicked();
                   },
                 )),
-                onTap: () {
-                  controller.onThemeClicked();
-                },
               ),
             ],
           ),
@@ -135,10 +130,19 @@ class NewsPage extends GetView<NewsController> {
                   final article = controller.articles[index];
                   return GestureDetector(
                     onTap: () {
+                      // Add news to reading history when clicked
+                      controller.addToHistory(
+                        article.title ?? "No Title",
+                        article.description ?? "No Description",
+                        article.url ?? "",
+                        article.image ?? "",
+                        article.publishedAt.toString()?? "",
+                      );
                       Get.to(() => NewsDetail(article: article));
                     },
                     child: Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 8.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -147,9 +151,10 @@ class NewsPage extends GetView<NewsController> {
                         children: [
                           // IMAGE
                           ClipRRect(
-                            borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(2)),
                             child: Image.network(
-                              article.image ?? "",
+                              article.image ?? "https://via.placeholder.com/200",
                               height: 200,
                               width: double.infinity,
                               fit: BoxFit.cover,
@@ -158,7 +163,8 @@ class NewsPage extends GetView<NewsController> {
                                   height: 200,
                                   width: double.infinity,
                                   color: Colors.grey[300],
-                                  child: const Icon(Icons.image, size: 50, color: Colors.grey),
+                                  child: const Icon(Icons.image,
+                                      size: 50, color: Colors.grey),
                                 );
                               },
                             ),
@@ -182,13 +188,15 @@ class NewsPage extends GetView<NewsController> {
                                 // **News Description**
                                 Text(
                                   article.description ?? "No Description",
-                                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey[700]),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 10.0),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
                                   children: [
                                     // News Source (Left Side)
                                     Text(
@@ -202,8 +210,11 @@ class NewsPage extends GetView<NewsController> {
 
                                     // Published Date (Right Side)
                                     Text(
-                                      controller.formatDate(article.publishedAt),
-                                      style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                                      controller
+                                          .formatDate(article.publishedAt),
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[700]),
                                     ),
                                   ],
                                 ),
@@ -216,7 +227,6 @@ class NewsPage extends GetView<NewsController> {
                   );
                 },
               );
-
             }),
           ),
         ],

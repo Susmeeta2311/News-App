@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:newsapp/database/database_helper.dart';
 import '../model/news_model.dart';
 import '../services/network_services.dart';
 
@@ -9,6 +10,10 @@ class NewsController extends GetxController {
   final selectedCategory = "General".obs;
   final articles = <Article>[].obs;
   final isLoading = false.obs;
+
+  final DatabaseHelper dbHelper = DatabaseHelper.instance;
+
+  RxList<Map<String, dynamic>> newsHistory = <Map<String, dynamic>>[].obs;
 
   final NetworkServices _networkServices = NetworkServices();
 
@@ -24,45 +29,64 @@ class NewsController extends GetxController {
     }
   }
 
+  // Fetch news history from the database
+  Future<void> fetchHistory() async {
+    final data = await dbHelper.getNewsHistory();
+    newsHistory.assignAll(data);
+  }
+
+  // Add news to history
+  Future<void> addToHistory(String title, String description, String url, String imageUrl, String publishedAt) async {
+    await dbHelper.insertNews({
+      'title': title,
+      'description': description,
+      'url': url,
+      'imageUrl': imageUrl,
+      'publishedAt': publishedAt,
+    });
+     fetchHistory(); // Refresh history after inserting
+  }
+
+  Future<void> deleteHistory(int id) async {
+    await dbHelper.deleteNews(id);
+    await fetchHistory();
+  }
+
+  Future<void> clearAllHistory() async {
+    await dbHelper.clearHistory();
+    await fetchHistory();
+  }
+
   Future<void> fetchNews() async {
     isLoading.value = true;
-
     try {
-      // Fetch the news based on the selected category
       final news = await _networkServices.fetchNews(selectedCategory.value.toLowerCase());
 
-
-      // Clear previous articles before adding new ones
       articles.clear();
       articles.assignAll(news.articles ?? []);
     } catch (e) {
-      // print("Error fetching news: $e");
+      print("Error fetching news: $e");
     } finally {
       isLoading.value = false;
     }
   }
 
   String formatDate(dynamic dateInput) {
-    if (dateInput == null) return "Unknown Date";
-
+    if (dateInput == null || dateInput.toString().isEmpty) return "Unknown Date";
     try {
-      DateTime date;
-      if (dateInput is DateTime) {
-        date = dateInput;
-      } else if (dateInput is String) {
-        date = DateTime.parse(dateInput);
-      } else {
-        return "Invalid Date";
-      }
+      DateTime date = DateTime.parse(dateInput.toString());
       return DateFormat("MMMM d, yyyy").format(date);
     } catch (e) {
       return "Invalid Date";
     }
   }
 
+
+
   @override
   void onInit() {
-    fetchNews();
     super.onInit();
+    fetchNews();
+    fetchHistory();
   }
 }
