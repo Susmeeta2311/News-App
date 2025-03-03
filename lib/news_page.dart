@@ -18,7 +18,8 @@ class NewsPage extends GetView<NewsController> {
           "News App",
           style: TextStyle(fontSize: 25.0, color: Colors.white),
         ),
-        backgroundColor: Get.isDarkMode ? const Color(0xff343a40) : Colors.blueAccent,
+        backgroundColor:
+            Get.isDarkMode ? const Color(0xff343a40) : Colors.blueAccent,
         actions: [
           IconButton(
             onPressed: () {
@@ -30,73 +31,80 @@ class NewsPage extends GetView<NewsController> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: Drawer(
-        child: Container(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          child: Column(
-            children: [
-              Container(
-                color: Theme.of(context).primaryColor,
-                width: double.infinity,
-                height: 190.0,
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
+          children: [
+            Container(
+              color: Get.isDarkMode ? Colors.black : Theme.of(context).primaryColor,
+              width: double.infinity,
+              height: 190.0,
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    " News App",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 27.0,
+                        fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    "  Stay informed",
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  SizedBox(height: 7.0),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Container(
+                color: Get.isDarkMode ? Colors.grey[900] : Theme.of(context).scaffoldBackgroundColor,
+                child: Column(
                   children: [
-                    Text(
-                      " News App",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 27.0,
-                          fontWeight: FontWeight.w400),
+                    ListTile(
+                      leading:
+                      Icon(Icons.home, color: Theme.of(context).iconTheme.color),
+                      title: const Text("Home"),
+                      onTap: () {
+                        Get.back();
+                      },
                     ),
-                    SizedBox(height: 10.0),
-                    Text(
-                      "  Stay informed",
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 16.0,
-                      ),
+                    ListTile(
+                      leading: const Icon(Icons.history),
+                      title: const Text("Reading History"),
+                      onTap: () {
+                        Get.to(const NewsReadingHistoryPage());
+                      },
                     ),
-                    SizedBox(height: 7.0),
+                    Divider(color: Theme.of(context).dividerColor),
+                    ListTile(
+                      leading: Obx(() {
+                        bool isDark = controller.isDarkMode.value;
+                        return Icon(
+                          isDark ? Icons.nightlight_rounded: Icons.sunny,
+                          color: isDark ? Colors.white70 : Colors.black,
+                        );
+                      }),
+                      title: const Text("Dark Mode"),
+                      trailing: Obx(() => Switch(
+                        value: controller.isDarkMode.value,
+                        onChanged: (value) {
+                          controller.onThemeClicked();
+                        },
+                      )),
+                    ),
                   ],
                 ),
               ),
-              ListTile(
-                leading:
-                Icon(Icons.home, color: Theme.of(context).iconTheme.color),
-                title: const Text("Home"),
-                onTap: () {
-                  Get.back();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.history),
-                title: const Text("Reading History"),
-                onTap: () {
-                  Get.to(const NewsReadingHistoryPage());
-                },
-              ),
-              Divider(color: Theme.of(context).dividerColor),
-              ListTile(
-                leading: Obx(() {
-                  bool isDark = controller.isDarkMode.value;
-                  return Icon(
-                    isDark ? Icons.nightlight_round : Icons.sunny,
-                    color: isDark ? Colors.white70 : Colors.black,
-                  );
-                }),
-                title: const Text("Dark Mode"),
-                trailing: Obx(() => Switch(
-                  value: controller.isDarkMode.value,
-                  onChanged: (value) {
-                    controller.onThemeClicked();
-                  },
-                )),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
+
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -131,13 +139,15 @@ class NewsPage extends GetView<NewsController> {
                   return GestureDetector(
                     onTap: () {
                       // Add news to reading history when clicked
-                      controller.addToHistory(
-                        article.title ?? "No Title",
-                        article.description ?? "No Description",
-                        article.url ?? "",
-                        article.image ?? "",
-                        article.publishedAt.toString()?? "",
-                      );
+                      controller.addToHistory({
+                        "title": article.title ?? "No Title",
+                        "description": article.description ?? "No Description",
+                        "url": article.url ?? "",
+                        "image": article.image ?? "",
+                        "publishedAt":
+                            article.publishedAt?.toString() ?? "Unknown Date",
+                      });
+
                       Get.to(() => NewsDetail(article: article));
                     },
                     child: Card(
@@ -154,7 +164,8 @@ class NewsPage extends GetView<NewsController> {
                             borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(2)),
                             child: Image.network(
-                              article.image ?? "https://via.placeholder.com/200",
+                              article.image ??
+                                  "https://via.placeholder.com/200",
                               height: 200,
                               width: double.infinity,
                               fit: BoxFit.cover,
@@ -196,7 +207,7 @@ class NewsPage extends GetView<NewsController> {
                                 const SizedBox(height: 10.0),
                                 Row(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     // News Source (Left Side)
                                     Text(

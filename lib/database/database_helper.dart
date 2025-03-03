@@ -17,7 +17,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'news_history.db');
     return await openDatabase(
       path,
-      version: 2, // Increment version number to apply new schema
+      version: 2,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE history(
@@ -52,7 +52,7 @@ class DatabaseHelper {
     final db = await database;
     return await db.query(
       'history',
-      columns: ['id', 'title', 'description', 'url', 'imageUrl', 'publishedAt'], // Include all fields
+      columns: ['id', 'title', 'description', 'url', 'imageUrl', 'publishedAt'],
       orderBy: 'id DESC',
     );
   }

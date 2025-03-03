@@ -30,6 +30,12 @@ class MyApp extends StatelessWidget {
           themeMode:
               controller.isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
           //
+      initialBinding: BindingsBuilder(() {
+        //IT WILL ALLOCATE MEMORY AT THE STARTING OF THE APPLICATION
+        Get.put(NewsController()); // DEPENDENCY INJECTION
+      }
+      ),
+
           home: const NewsPage(),
         ));
   }

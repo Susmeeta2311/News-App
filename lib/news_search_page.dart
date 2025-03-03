@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:newsapp/controller/news_controller.dart';
-import 'package:share_plus/share_plus.dart';
 
 class NewsSearchPage extends GetView<NewsController> {
   const NewsSearchPage({super.key});

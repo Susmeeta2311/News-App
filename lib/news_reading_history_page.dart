@@ -64,7 +64,7 @@ class NewsReadingHistoryPage extends GetView<NewsController> {
                                   controller.clearAllHistory();
                                   Get.back();
                                   Get.snackbar("Deleted",
-                                      "Reading history cleared successfully!",
+                                      "Reading history deleted successfully!",
                                       snackPosition: SnackPosition.BOTTOM);
                                 },
                                 child: Text("Clear",
@@ -173,9 +173,9 @@ class NewsReadingHistoryPage extends GetView<NewsController> {
                             ),
 
                             Text(
-                              controller.formatDate(
-                                  newsItem['publishedAt']?.toString()),
-                              // Use controller
+                                controller.formatDate(newsItem['publishedAt']),
+
+                                // Use controller
                               style: TextStyle(
                                   fontSize: 12, color: Colors.grey[600]),
                             ),

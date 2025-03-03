@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:newsapp/database/database_helper.dart';
 import '../model/news_model.dart';
 import '../services/network_services.dart';
 
@@ -11,11 +10,18 @@ class NewsController extends GetxController {
   final articles = <Article>[].obs;
   final isLoading = false.obs;
 
-  final DatabaseHelper dbHelper = DatabaseHelper.instance;
-
-  RxList<Map<String, dynamic>> newsHistory = <Map<String, dynamic>>[].obs;
-
   final NetworkServices _networkServices = NetworkServices();
+
+  // News Reading History
+  final newsHistory = <Map<String, dynamic>>[].obs;
+
+  void addToHistory(Map<String, dynamic> newsItem) {
+    newsHistory.add(newsItem);
+  }
+
+  void clearAllHistory() {
+    newsHistory.clear();
+  }
 
   void onThemeClicked() {
     isDarkMode.value = !isDarkMode.value;
@@ -29,38 +35,11 @@ class NewsController extends GetxController {
     }
   }
 
-  // Fetch news history from the database
-  Future<void> fetchHistory() async {
-    final data = await dbHelper.getNewsHistory();
-    newsHistory.assignAll(data);
-  }
-
-  // Add news to history
-  Future<void> addToHistory(String title, String description, String url, String imageUrl, String publishedAt) async {
-    await dbHelper.insertNews({
-      'title': title,
-      'description': description,
-      'url': url,
-      'imageUrl': imageUrl,
-      'publishedAt': publishedAt,
-    });
-     fetchHistory(); // Refresh history after inserting
-  }
-
-  Future<void> deleteHistory(int id) async {
-    await dbHelper.deleteNews(id);
-    await fetchHistory();
-  }
-
-  Future<void> clearAllHistory() async {
-    await dbHelper.clearHistory();
-    await fetchHistory();
-  }
-
   Future<void> fetchNews() async {
     isLoading.value = true;
     try {
-      final news = await _networkServices.fetchNews(selectedCategory.value.toLowerCase());
+      final news = await _networkServices
+          .fetchNews(selectedCategory.value.toLowerCase());
 
       articles.clear();
       articles.assignAll(news.articles ?? []);
@@ -72,7 +51,9 @@ class NewsController extends GetxController {
   }
 
   String formatDate(dynamic dateInput) {
-    if (dateInput == null || dateInput.toString().isEmpty) return "Unknown Date";
+    if (dateInput == null || dateInput.toString().isEmpty) {
+      return "Unknown Date";
+    }
     try {
       DateTime date = DateTime.parse(dateInput.toString());
       return DateFormat("MMMM d, yyyy").format(date);
@@ -81,12 +62,9 @@ class NewsController extends GetxController {
     }
   }
 
-
-
   @override
   void onInit() {
     super.onInit();
     fetchNews();
-    fetchHistory();
   }
 }
