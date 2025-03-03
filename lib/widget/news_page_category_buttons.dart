@@ -22,7 +22,7 @@ class CategoryButton extends StatelessWidget {
             controller.categorySelection(title);
           },
           icon: isSelected
-              ? const Icon(Icons.check, color: Colors.white)
+              ? const Icon(Icons.check, color: Colors.white,size: 25.0,)
               : const SizedBox(width: 0),
           label: Text(
             title,
@@ -33,7 +33,7 @@ class CategoryButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: isSelected
                 ? (isDark ? Colors.black :Color(0xff9d4edd))
-                : (isDark ? Colors.white30 : Colors.white70),
+                : (isDark ? Color(0xff343a40) : Colors.white70),
             foregroundColor: isDark ? Colors.white : Colors.black,
             side: const BorderSide(color: Colors.grey, width: 0.5),
           ),

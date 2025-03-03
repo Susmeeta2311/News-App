@@ -20,7 +20,6 @@ class NewsController extends GetxController {
   void categorySelection(String category) {
     if (selectedCategory.value != category) {
       selectedCategory.value = category;
-      print("Selected category changed to: $category"); // Debugging
       fetchNews();
     }
   }
@@ -28,21 +27,16 @@ class NewsController extends GetxController {
   Future<void> fetchNews() async {
     isLoading.value = true;
 
-    // Print to debug category selection
-    print("Fetching news for category: ${selectedCategory.value}");
-
     try {
       // Fetch the news based on the selected category
       final news = await _networkServices.fetchNews(selectedCategory.value.toLowerCase());
 
-      // Debugging: Print number of articles received
-      print("Articles received: ${news.articles?.length}");
 
       // Clear previous articles before adding new ones
       articles.clear();
       articles.assignAll(news.articles ?? []);
     } catch (e) {
-      print("Error fetching news: $e");
+      // print("Error fetching news: $e");
     } finally {
       isLoading.value = false;
     }

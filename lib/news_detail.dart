@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:newsapp/model/news_model.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:share/share.dart';
 import 'package:intl/intl.dart';
-
 
 class NewsDetail extends StatelessWidget {
   final Article article;
@@ -15,18 +14,20 @@ class NewsDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(article.source?.name ?? "News Details",style: TextStyle(fontSize: 17.0)),
+        title: Text(article.source?.name ?? "News Details",
+            style: TextStyle(fontSize: 17.0)),
         backgroundColor: Get.isDarkMode ? Colors.black : Colors.blue,
         foregroundColor: Colors.white,
         actions: [
-          IconButton(onPressed: (){
-            if(article.url != null && article.url!.isNotEmpty){
-              Share.share("Check out this news: ${article.url!}");
-            }else{
-              Get.snackbar("Error", "No URL available to share",
-                  snackPosition: SnackPosition.BOTTOM);
-            }
-          }, icon: Icon(Icons.share,color: Colors.white,))
+          IconButton(
+              onPressed: () {
+                Share.share('Check out this news: https://example.com/news',
+                    subject: 'Interesting News!');
+              },
+              icon: Icon(
+                Icons.share,
+                color: Colors.white,
+              ))
         ],
       ),
       body: SingleChildScrollView(
@@ -47,7 +48,8 @@ class NewsDetail extends StatelessWidget {
                       height: 200,
                       width: double.infinity,
                       color: Colors.grey[300],
-                      child: const Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                      child: const Icon(Icons.broken_image,
+                          size: 50, color: Colors.grey),
                     );
                   },
                 ),
@@ -57,10 +59,10 @@ class NewsDetail extends StatelessWidget {
             // News Title
             Text(
               article.title?.toString() ?? "No Title", // Ensuring it's a String
-              style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              style:
+                  const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20.0),
-
 
             // Date and Read More Button
             Row(
@@ -68,18 +70,22 @@ class NewsDetail extends StatelessWidget {
               children: [
                 Text(
                   article.publishedAt != null
-                      ? DateFormat("MMMM d, yyyy").format(article.publishedAt!) // No need for parsing
+                      ? DateFormat("MMMM d, yyyy")
+                          .format(article.publishedAt!) // No need for parsing
                       : "Unknown Date",
                   style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                 ),
                 InkWell(
                   onTap: () async {
                     if (article.url != null && article.url!.isNotEmpty) {
-                      final Uri url = Uri.parse(article.url.toString()); // Ensuring it's a String
+                      final Uri url = Uri.parse(
+                          article.url.toString()); // Ensuring it's a String
                       if (await canLaunchUrl(url)) {
-                        await launchUrl(url, mode: LaunchMode.externalApplication);
+                        await launchUrl(url,
+                            mode: LaunchMode.externalApplication);
                       } else {
-                        Get.snackbar("Error", "Could not open the article", snackPosition: SnackPosition.BOTTOM);
+                        Get.snackbar("Error", "Could not open the article",
+                            snackPosition: SnackPosition.BOTTOM);
                       }
                     }
                   },
@@ -96,18 +102,18 @@ class NewsDetail extends StatelessWidget {
             ),
             SizedBox(height: 25.0),
 
-
             // News Description
             Text(
-              article.description?.toString() ?? "No Description Available", // Ensuring it's a String
+              article.description?.toString() ?? "No Description Available",
+              // Ensuring it's a String
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
 
-
             // Full News Content
             Text(
-              article.content?.toString() ?? "No Additional Content Available", // Ensuring it's a String
+              article.content?.toString() ?? "No Additional Content Available",
+              // Ensuring it's a String
               style: const TextStyle(fontSize: 16),
             ),
           ],

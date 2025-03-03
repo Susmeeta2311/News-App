@@ -20,7 +20,7 @@ class NewsPage extends GetView<NewsController> {
           "News App",
           style: TextStyle(fontSize: 25.0, color: Colors.white),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Get.isDarkMode ? Color(0xff343a40) : Colors.blueAccent,
         actions: [
           IconButton(
             onPressed: () {

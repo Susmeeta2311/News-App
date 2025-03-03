@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:newsapp/controller/news_controller.dart';
+import 'package:share_plus/share_plus.dart';
 
 class NewsSearchPage extends GetView<NewsController> {
   const NewsSearchPage({super.key});
@@ -17,7 +18,7 @@ class NewsSearchPage extends GetView<NewsController> {
           ),
           style: const TextStyle(color: Colors.black),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Get.isDarkMode ? Color(0xff343a40) : Colors.blueAccent,
         iconTheme:IconThemeData(color: Colors.white),
         actions:  [
          Icon(Icons.clear,color: Colors.white),

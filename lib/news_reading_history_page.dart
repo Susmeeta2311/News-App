@@ -17,7 +17,7 @@ class NewsReadingHistoryPage extends GetView<NewsController> {
           ),
           style: const TextStyle(color: Colors.black),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Get.isDarkMode ? Color(0xff343a40) : Colors.blueAccent,
         iconTheme: IconThemeData(color: Colors.white),
         actions: [
           IconButton(
